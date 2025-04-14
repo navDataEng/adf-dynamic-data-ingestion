@@ -55,7 +55,7 @@ The primary reason for converting to JSON was to support downstream systems that
 - **Lifecycle Management**: Automatically archives files older than 30 days in ADLS using a lifecycle policy.
 - **Self-hosted IR**: Used to access on-premises SQL Server database securely from ADF.
 
-  ![Data Flow](Images/Data_Flow.png)
+  ![Data Flow](Images/Framework_Architecture.png)
 
 ## 🔄 Pipeline Flow
 
@@ -71,7 +71,7 @@ The primary reason for converting to JSON was to support downstream systems that
 4. Data is available for 30 days, post which lifecycle rules move it to the `archive` tier.
 5. Execution metadata is logged into the audit tables.
 
-Data Flow Diagram
+![Data Flow Diagram](Images/Pipeline_Flow.png)
 
 ## 🗂️ Control & Audit Tables
 
