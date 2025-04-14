@@ -21,7 +21,7 @@ Assume an organization receives data from multiple upstream systems, including:
 - **Relational databases**: MS SQL Server and Azure SQL Database  
 - **Flat files**: Structured CSV files delivered to Azure Blob Storage
 
-Each relational database source system contains multiple databases, schemas, and tables. The **downstream analytics team** requested that all data be delivered to **Azure Data Lake Storage Gen2 (ADLS Gen2)** in a **flexible and unified format — JSON**, instead of its native format (CSV or relational structure).  
+Each relational database source system contains multiple databases, schemas, and tables. Each CSV file is placed in the designated folder. The **downstream analytics team** requested that all data be delivered to **Azure Data Lake Storage Gen2 (ADLS Gen2)** in a **flexible and unified format — JSON**, instead of its native format (CSV or relational structure).  
 
 The goals are to:
 
@@ -55,7 +55,7 @@ The primary reason for converting to JSON was to support downstream systems that
 - **Lifecycle Management**: Automatically archives files older than 30 days in ADLS using a lifecycle policy.
 - **Self-hosted IR**: Used to access on-premises SQL Server database securely from ADF.
 
-  Data Flow Diagram
+  ![Normalizer Flow](images/Date_Split_Normalizer_Mapping.png)
 
 ## 🔄 Pipeline Flow
 
