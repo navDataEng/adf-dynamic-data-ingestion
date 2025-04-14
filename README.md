@@ -132,7 +132,7 @@ Stores logs of execution, including:
 
 ## 📣 Contact
 
-Feel free to connect with me on [`LinkedIn`](https://www.linkedin.com/in/madalanaveen) or send me an [`Email`](madalanaveen9@gmail.com) if you’d like to know more or discuss how I built this project.
+Feel free to connect with me on [`LinkedIn`](https://www.linkedin.com/in/madalanaveen) or send me an [`Email`](mailto:madalanaveen9@gmail.com) if you’d like to know more or discuss how I built this project.
 
 ---
 
