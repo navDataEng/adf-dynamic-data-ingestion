@@ -55,7 +55,7 @@ The primary reason for converting to JSON was to support downstream systems that
 - **Lifecycle Management**: Automatically archives files older than 30 days in ADLS using a lifecycle policy.
 - **Self-hosted IR**: Used to access on-premises SQL Server database securely from ADF.
 
-  ![Normalizer Flow](images/Date_Split_Normalizer_Mapping.png)
+  ![Data Flow](Images/Data_Flow.png)
 
 ## 🔄 Pipeline Flow
 
@@ -75,7 +75,7 @@ Data Flow Diagram
 
 ## 🗂️ Control & Audit Tables
 
-### 🔧 `src_control_table`
+### 🔧 [`src_control_table`](Images/Data_Flow.png)
 Stores metadata about the source system:
 - Source type, database, schema, table, folder paths, and active status.
 
