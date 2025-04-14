@@ -42,6 +42,8 @@ The primary reason for converting to JSON was to support downstream systems that
 - **Self-Hosted Integration Runtime**
 - **JSON File Format**
 - **Lifecycle Management Rules**
+- **Azure Linked Service**
+- **Azure Key Vault**
 
 ## 🛠️ Solution Architecture
 
