@@ -1,0 +1,189 @@
+{
+    "name": "pl_master_extract",
+    "properties": {
+        "activities": [
+            {
+                "name": "Lookup1",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlServerSource",
+                        "sqlReaderQuery": "select * from my_db.dbo.src_control_table where active_indicator=1;\n",
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "None"
+                    },
+                    "dataset": {
+                        "referenceName": "ds_onprem_sqlserver_param",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "ds_param_schema_name": "dbo",
+                            "ds_param_table_name": "src_control_table",
+                            "ds_param_database_name": "my_db"
+                        }
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "ForEach1",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "Lookup1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('Lookup1').output.value",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Switch1",
+                            "type": "Switch",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "on": {
+                                    "value": "@toLower(item().source_system)",
+                                    "type": "Expression"
+                                },
+                                "cases": [
+                                    {
+                                        "value": "on-prem-db",
+                                        "activities": [
+                                            {
+                                                "name": "pl_onprem_sqlserver_extract",
+                                                "type": "ExecutePipeline",
+                                                "dependsOn": [],
+                                                "policy": {
+                                                    "secureInput": false
+                                                },
+                                                "userProperties": [],
+                                                "typeProperties": {
+                                                    "pipeline": {
+                                                        "referenceName": "pl_onprem_sqlserver_extract",
+                                                        "type": "PipelineReference"
+                                                    },
+                                                    "waitOnCompletion": true,
+                                                    "parameters": {
+                                                        "pl_param_database_name": {
+                                                            "value": "@item().database_name",
+                                                            "type": "Expression"
+                                                        },
+                                                        "pl_param_schema_name": {
+                                                            "value": "@item().schema_name",
+                                                            "type": "Expression"
+                                                        },
+                                                        "pl_param_table_name": {
+                                                            "value": "@item().table_name",
+                                                            "type": "Expression"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "value": "azure-blob",
+                                        "activities": [
+                                            {
+                                                "name": "pl_azure_adlsgen2_extract",
+                                                "type": "ExecutePipeline",
+                                                "dependsOn": [],
+                                                "policy": {
+                                                    "secureInput": false
+                                                },
+                                                "userProperties": [],
+                                                "typeProperties": {
+                                                    "pipeline": {
+                                                        "referenceName": "pl_azure_adlsgen2_extract",
+                                                        "type": "PipelineReference"
+                                                    },
+                                                    "waitOnCompletion": true,
+                                                    "parameters": {
+                                                        "pl_param_target_container": {
+                                                            "value": "@item().target_container",
+                                                            "type": "Expression"
+                                                        },
+                                                        "pl_param_target_folder_name": {
+                                                            "value": "@item().target_folder",
+                                                            "type": "Expression"
+                                                        },
+                                                        "pl_param_source_container": {
+                                                            "value": "@item().source_container",
+                                                            "type": "Expression"
+                                                        },
+                                                        "pl_param_source_folder_name": {
+                                                            "value": "@item().source_folder",
+                                                            "type": "Expression"
+                                                        },
+                                                        "pl_param_source_system": {
+                                                            "value": "@item().source_system",
+                                                            "type": "Expression"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "value": "azure-sql",
+                                        "activities": [
+                                            {
+                                                "name": "pl_azure_sql_extract",
+                                                "type": "ExecutePipeline",
+                                                "dependsOn": [],
+                                                "policy": {
+                                                    "secureInput": false
+                                                },
+                                                "userProperties": [],
+                                                "typeProperties": {
+                                                    "pipeline": {
+                                                        "referenceName": "pl_azure_sql_extract",
+                                                        "type": "PipelineReference"
+                                                    },
+                                                    "waitOnCompletion": true,
+                                                    "parameters": {
+                                                        "pl_param_database_name": {
+                                                            "value": "@item().database_name",
+                                                            "type": "Expression"
+                                                        },
+                                                        "pl_param_schema_name": {
+                                                            "value": "@item().schema_name",
+                                                            "type": "Expression"
+                                                        },
+                                                        "pl_param_table_name": {
+                                                            "value": "@item().table_name",
+                                                            "type": "Expression"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2025-04-13T17:53:53Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

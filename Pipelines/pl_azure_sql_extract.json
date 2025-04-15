@@ -1,0 +1,83 @@
+{
+    "name": "pl_azure_sql_extract",
+    "properties": {
+        "activities": [
+            {
+                "name": "CopyArchive",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "None"
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "ds_azure_sql_param",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "ds_param_schema_name": {
+                                "value": "@pipeline().parameters.pl_param_schema_name",
+                                "type": "Expression"
+                            },
+                            "ds_param_table_name": {
+                                "value": "@pipeline().parameters.pl_param_table_name",
+                                "type": "Expression"
+                            },
+                            "ds_param_database_name": {
+                                "value": "@pipeline().parameters.pl_param_database_name",
+                                "type": "Expression"
+                            }
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "ds_adlsgen2_json_param",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "ds_param_folder_name": "Archive",
+                            "ds_param_file_name": {
+                                "value": "@concat(pipeline().parameters.pl_param_database_name,'-',pipeline().parameters.pl_param_schema_name,'-',pipeline().parameters.pl_param_table_name,'_',convertFromUtc(utcNow(),'Eastern Standard Time'),'.json')",
+                                "type": "Expression"
+                            },
+                            "ds_param_container_name": "downstream"
+                        }
+                    }
+                ]
+            }
+        ],
+        "parameters": {
+            "pl_param_database_name": {
+                "type": "string"
+            },
+            "pl_param_schema_name": {
+                "type": "string"
+            },
+            "pl_param_table_name": {
+                "type": "string"
+            }
+        },
+        "annotations": []
+    }
+}

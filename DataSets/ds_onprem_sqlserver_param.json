@@ -1,0 +1,94 @@
+{
+    "name": "ds_onprem_sqlserver_param",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "ls_onprem_sqlserver",
+            "type": "LinkedServiceReference",
+            "parameters": {
+                "ls_param_db_name": {
+                    "value": "@dataset().ds_param_database_name",
+                    "type": "Expression"
+                }
+            }
+        },
+        "parameters": {
+            "ds_param_schema_name": {
+                "type": "string",
+                "defaultValue": "dbo"
+            },
+            "ds_param_table_name": {
+                "type": "string",
+                "defaultValue": "src_control_table"
+            },
+            "ds_param_database_name": {
+                "type": "string",
+                "defaultValue": "my_db"
+            }
+        },
+        "annotations": [],
+        "type": "SqlServerTable",
+        "schema": [
+            {
+                "name": "entry_id",
+                "type": "decimal",
+                "precision": 18,
+                "scale": 0
+            },
+            {
+                "name": "source_system",
+                "type": "varchar"
+            },
+            {
+                "name": "database_name",
+                "type": "varchar"
+            },
+            {
+                "name": "schema_name",
+                "type": "varchar"
+            },
+            {
+                "name": "table_name",
+                "type": "varchar"
+            },
+            {
+                "name": "source_container",
+                "type": "varchar"
+            },
+            {
+                "name": "source_folder",
+                "type": "varchar"
+            },
+            {
+                "name": "target_container",
+                "type": "varchar"
+            },
+            {
+                "name": "target_folder",
+                "type": "varchar"
+            },
+            {
+                "name": "active_indicator",
+                "type": "decimal",
+                "precision": 18,
+                "scale": 0
+            },
+            {
+                "name": "created_at",
+                "type": "datetime",
+                "precision": 23,
+                "scale": 3
+            }
+        ],
+        "typeProperties": {
+            "schema": {
+                "value": "@dataset().ds_param_schema_name",
+                "type": "Expression"
+            },
+            "table": {
+                "value": "@dataset().ds_param_table_name",
+                "type": "Expression"
+            }
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

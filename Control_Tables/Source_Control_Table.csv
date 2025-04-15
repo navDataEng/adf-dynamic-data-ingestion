@@ -1,0 +1,27 @@
+﻿entry_id,source_system,database_name,schema_name,table_name,source_container,source_folder,target_container,target_folder,active_indicator,created_at
+1,on-prem-db,DatabaseA,Schema1,events,NULL,NULL,NULL,NULL,1,2025-04-12 19:36:58.907
+2,on-prem-db,DatabaseA,Schema1,users,NULL,NULL,NULL,NULL,1,2025-04-12 19:42:19.640
+3,on-prem-db,DatabaseA,Schema2,users,NULL,NULL,NULL,NULL,1,2025-04-12 19:42:19.640
+4,on-prem-db,DatabaseB,Schema1,users,NULL,NULL,NULL,NULL,1,2025-04-12 19:42:19.640
+5,on-prem-db,DatabaseB,Schema1,transactions,NULL,NULL,NULL,NULL,0,2025-04-12 19:42:19.640
+6,on-prem-db,DatabaseB,Schema2,transactions,NULL,NULL,NULL,NULL,1,2025-04-12 19:42:19.640
+7,on-prem-db,DatabaseB,Schema2,users,NULL,NULL,NULL,NULL,1,2025-04-12 19:42:19.640
+8,on-prem-db,DatabaseC,Schema1,job_postings,NULL,NULL,NULL,NULL,1,2025-04-12 19:42:19.640
+9,on-prem-db,DatabaseC,Schema2,customer_sales,NULL,NULL,NULL,NULL,1,2025-04-12 19:42:19.640
+10,on-prem-db,DatabaseC,Schema3,post_events,NULL,NULL,NULL,NULL,1,2025-04-12 19:42:19.640
+11,azure-blob,NULL,NULL,NULL,upstream,Employees,downstream,Employees,1,2025-04-12 22:33:02.850
+12,azure-blob,NULL,NULL,NULL,upstream,Employees,downstream,Employees2,0,2025-04-11 22:33:02.850
+13,azure-blob,NULL,NULL,NULL,upstream,Employees,downstream,Employees1,0,2025-04-10 22:33:02.850
+14,azure-blob,NULL,NULL,NULL,upstream,Departments,downstream,Departments,1,2025-04-12 22:33:02.850
+15,azure-blob,NULL,NULL,NULL,upstream,Events,downstream,Events,1,2025-04-12 22:33:02.850
+16,azure-blob,NULL,NULL,NULL,upstream,Events,downstream,Post_Events,0,2025-04-11 22:33:02.850
+17,azure-sql,Customers,USA,users,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607
+18,azure-sql,Customers,USA,events,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607
+19,azure-sql,Customers,Canada,users,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607
+20,azure-sql,Reports,Events,post_events_US,NULL,NULL,NULL,NULL,0,2025-04-12 14:00:28.607
+21,azure-sql,Reports,Events,post_events,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607
+22,azure-sql,Reports,Jobs,job_postings,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607
+23,azure-sql,Reports,Sales,customer_sales,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607
+24,azure-sql,Transactions,India,users,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607
+25,azure-sql,Transactions,USA,transactions,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607
+26,azure-sql,Transactions,USA,users,NULL,NULL,NULL,NULL,1,2025-04-13 14:00:28.607

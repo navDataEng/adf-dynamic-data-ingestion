@@ -1,0 +1,39 @@
+{
+    "name": "ds_azure_sql_param",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "ls_azure_sql_param",
+            "type": "LinkedServiceReference",
+            "parameters": {
+                "ls_param_database_name": {
+                    "value": "@dataset().ds_param_database_name",
+                    "type": "Expression"
+                }
+            }
+        },
+        "parameters": {
+            "ds_param_schema_name": {
+                "type": "string"
+            },
+            "ds_param_table_name": {
+                "type": "string"
+            },
+            "ds_param_database_name": {
+                "type": "string"
+            }
+        },
+        "annotations": [],
+        "type": "AzureSqlTable",
+        "schema": [],
+        "typeProperties": {
+            "schema": {
+                "value": "@dataset().ds_param_schema_name",
+                "type": "Expression"
+            },
+            "table": {
+                "value": "@dataset().ds_param_table_name",
+                "type": "Expression"
+            }
+        }
+    }
+}

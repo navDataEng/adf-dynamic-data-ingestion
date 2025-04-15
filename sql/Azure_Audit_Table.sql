@@ -1,0 +1,20 @@
+create table Azure_Audit_Table (
+	source_system varchar(200),
+	source_container varchar (200),
+	source_folder varchar (200),
+	target_container varchar (200),
+	target_folder varchar (200),
+	source_file_name varchar (200), 
+	target_file_name varchar (200), 
+	adf_name varchar (200),
+	pipeline_name varchar(200), 
+	run_id varchar (200),
+	trigger_type varchar (200), 
+	records_read int,
+	records_writren int,
+	execution_start_time datetime,
+	execution_end_time datetime,
+	copy_duration int,
+	execution_status varchar (200),
+	execution_error_message varchar(4000)
+);

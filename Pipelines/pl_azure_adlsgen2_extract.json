@@ -1,0 +1,477 @@
+{
+    "name": "pl_azure_adlsgen2_extract",
+    "properties": {
+        "activities": [
+            {
+                "name": "Get Metadata1",
+                "type": "GetMetadata",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "dataset": {
+                        "referenceName": "ds_adlsgen2_json_param2",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "ds_param_container_name": {
+                                "value": "@pipeline().parameters.pl_param_source_container",
+                                "type": "Expression"
+                            },
+                            "ds_param_folder_name": {
+                                "value": "@pipeline().parameters.pl_param_source_folder_name",
+                                "type": "Expression"
+                            }
+                        }
+                    },
+                    "fieldList": [
+                        "childItems"
+                    ],
+                    "storeSettings": {
+                        "type": "AzureBlobFSReadSettings",
+                        "recursive": true,
+                        "enablePartitionDiscovery": false
+                    },
+                    "formatSettings": {
+                        "type": "JsonReadSettings"
+                    }
+                }
+            },
+            {
+                "name": "ForEach1",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "Get Metadata1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('Get Metadata1').output.childItems",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "SpAuditTableSucc",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "CopyDataArchive",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[sp_Azure_Audit_Table]",
+                                "storedProcedureParameters": {
+                                    "adf_name": {
+                                        "value": {
+                                            "value": "@pipeline().DataFactory",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "copy_duration": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.copyDuration",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Int32"
+                                    },
+                                    "execution_end_time": {
+                                        "value": {
+                                            "value": "@convertFromUtc(utcNow(),'Eastern Standard Time')",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Datetime"
+                                    },
+                                    "execution_error_message": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.errors",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "execution_start_time": {
+                                        "value": {
+                                            "value": "@convertFromUtc(pipeline().TriggerTime,'Eastern Standard Time')",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Datetime"
+                                    },
+                                    "execution_status": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.executionDetails[0].status",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "pipeline_name": {
+                                        "value": {
+                                            "value": "@pipeline().Pipeline",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "records_read": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.rowsRead",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Int32"
+                                    },
+                                    "records_writren": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.rowsCopied",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Int32"
+                                    },
+                                    "run_id": {
+                                        "value": {
+                                            "value": "@pipeline().RunId",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "source_container": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_source_container",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "source_file_name": {
+                                        "value": {
+                                            "value": "@item().name",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "source_folder": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_source_folder_name",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "source_system": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_source_system",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "target_container": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_target_container",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "target_file_name": {
+                                        "value": {
+                                            "value": "@concat(replace(item().name,'.csv',''),'_',convertFromUtc(utcNow(),'Eastern Standard Time'),'.json')",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "target_folder": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_target_folder_name",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "trigger_type": {
+                                        "value": {
+                                            "value": "@pipeline().TriggerType",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    }
+                                }
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "ls_onprem_sqlserver",
+                                "type": "LinkedServiceReference",
+                                "parameters": {
+                                    "ls_param_db_name": "my_db"
+                                }
+                            }
+                        },
+                        {
+                            "name": "SpAuditTableFail",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "CopyDataArchive",
+                                    "dependencyConditions": [
+                                        "Failed"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "storedProcedureName": "[dbo].[sp_Azure_Audit_Table]",
+                                "storedProcedureParameters": {
+                                    "adf_name": {
+                                        "value": {
+                                            "value": "@pipeline().DataFactory",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "copy_duration": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.copyDuration",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Int32"
+                                    },
+                                    "execution_end_time": {
+                                        "value": {
+                                            "value": "@convertFromUtc(utcNow(),'Eastern Standard Time')",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Datetime"
+                                    },
+                                    "execution_error_message": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.errors",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "execution_start_time": {
+                                        "value": {
+                                            "value": "@convertFromUtc(pipeline().TriggerTime,'Eastern Standard Time')",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Datetime"
+                                    },
+                                    "execution_status": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.executionDetails[0].status",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "pipeline_name": {
+                                        "value": {
+                                            "value": "@pipeline().Pipeline",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "records_read": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.rowsRead",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Int32"
+                                    },
+                                    "records_writren": {
+                                        "value": {
+                                            "value": "@activity('CopyDataArchive').output.rowsCopied",
+                                            "type": "Expression"
+                                        },
+                                        "type": "Int32"
+                                    },
+                                    "run_id": {
+                                        "value": {
+                                            "value": "@pipeline().RunId",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "source_container": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_source_container",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "source_file_name": {
+                                        "value": {
+                                            "value": "@item().name",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "source_folder": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_source_folder_name",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "source_system": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_source_system",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "target_container": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_target_container",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "target_file_name": {
+                                        "value": {
+                                            "value": "@concat(replace(item().name,'.csv',''),'_',convertFromUtc(utcNow(),'Eastern Standard Time'),'.json')",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "target_folder": {
+                                        "value": {
+                                            "value": "@pipeline().parameters.pl_param_target_folder_name",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "trigger_type": {
+                                        "value": {
+                                            "value": "@pipeline().TriggerType",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    }
+                                }
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "ls_onprem_sqlserver",
+                                "type": "LinkedServiceReference",
+                                "parameters": {
+                                    "ls_param_db_name": "my_db"
+                                }
+                            }
+                        },
+                        {
+                            "name": "CopyDataArchive",
+                            "type": "Copy",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "DelimitedTextSource",
+                                    "storeSettings": {
+                                        "type": "AzureBlobFSReadSettings",
+                                        "recursive": true,
+                                        "enablePartitionDiscovery": false
+                                    },
+                                    "formatSettings": {
+                                        "type": "DelimitedTextReadSettings"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "JsonSink",
+                                    "storeSettings": {
+                                        "type": "AzureBlobFSWriteSettings"
+                                    },
+                                    "formatSettings": {
+                                        "type": "JsonWriteSettings"
+                                    }
+                                },
+                                "enableStaging": false
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "ds_adlsgen2_upstream",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "ds_param_container_name": {
+                                            "value": "@pipeline().parameters.pl_param_source_container",
+                                            "type": "Expression"
+                                        },
+                                        "ds_param_folder_name": {
+                                            "value": "@pipeline().parameters.pl_param_source_folder_name",
+                                            "type": "Expression"
+                                        },
+                                        "ds_param_file_name": {
+                                            "value": "@item().name",
+                                            "type": "Expression"
+                                        }
+                                    }
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "ds_adlsgen2_json_param",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "ds_param_folder_name": "Archive",
+                                        "ds_param_file_name": {
+                                            "value": "@concat('Azure','-',pipeline().parameters.pl_param_source_folder_name,'-',replace(item().name,'.csv',''),'_',convertFromUtc(utcNow(),'Eastern Standard Time'),'.json')",
+                                            "type": "Expression"
+                                        },
+                                        "ds_param_container_name": {
+                                            "value": "@pipeline().parameters.pl_param_target_container",
+                                            "type": "Expression"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ],
+        "parameters": {
+            "pl_param_target_container": {
+                "type": "string"
+            },
+            "pl_param_target_folder_name": {
+                "type": "string"
+            },
+            "pl_param_source_container": {
+                "type": "string"
+            },
+            "pl_param_source_folder_name": {
+                "type": "string"
+            },
+            "pl_param_source_system": {
+                "type": "string"
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2025-04-13T17:53:22Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
