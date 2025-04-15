@@ -55,7 +55,7 @@ The primary reason for converting to JSON was to support downstream systems that
 - **Lifecycle Management**: Automatically archives files older than 30 days in ADLS using a lifecycle policy.
 - **Self-hosted IR**: Used to access on-premises SQL Server database securely from ADF.
 
-  ![Data Flow](Images/Framework_Architecture.png)
+  ![Data Flow](Images/Framework_Architecture_Diagram.png)
 
 ## 🔄 Pipeline Flow
 
@@ -71,45 +71,32 @@ The primary reason for converting to JSON was to support downstream systems that
 4. Data is available for 30 days, post which lifecycle rules move it to the `archive` tier.
 5. Execution metadata is logged into the audit tables.
 
-![Data Flow Diagram](Images/Pipeline_Flow.png)
+![Data Flow Diagram](Images/Pipeline_Flow_Diagram.png)
 
 ## 🗂️ Control & Audit Tables
 
-### 🔧 [`src_control_table`](Images/Data_Flow.png)
+### 🔧 [`src_control_table`](Control_Tables/Source_Control_Table.csv)
 Stores metadata about the source system:
 - Source type, database, schema, table, folder paths, and active status.
 
-### 🧾 `Audit_Table` & `Azure_Audit_Table`
+### 🧾 [`Audit_Table`](Audit_Tables/Database_Audit_Table.csv) & [`Azure_Audit_Table`](Audit_Tables/Blob_Audit_Table.csv)
 Stores logs of execution, including:
 - Run ID, records read/written, execution status, timestamps, errors, etc.
 
-
 ## 📂 Folder Structure
 
-```
-/pipelines
-  └── pipeline_sql_server.json
-  └── pipeline_azure_sql_db.json
-  └── pipeline_blob_csv.json
-  └── master_pipeline.json
+| 📁 Folder | 📄 Files |
+|----------|---------|
+| `Pipelines` | [`pl_master_extract`](Pipelines/pl_master_extract.json), [`pl_onprem_sqlserver_extract`](Pipelines/pl_onprem_sqlserver_extract.json), [`pl_azure_sql_extract`](Pipelines/pl_azure_sql_extract.json), [`pl_azure_adlsgen2_extract`](Pipelines/pl_azure_adlsgen2_extract.json) |
+| `Pipeline_Runs` | [`Adf_Pipeline_Activity_Runs.xlsx`](Pipeline_Runs/Adf_Pipeline_Activity_Runs.xlsx) |
+| `DataSets` | [`ds_adlsgen2_json_param`](DataSets/ds_adlsgen2_json_param.json), [`ds_adlsgen2_json_param2`](DataSets/ds_adlsgen2_json_param2.json), [`ds_adlsgen2_upstream`](DataSets/ds_adlsgen2_upstream.json), [`ds_azure_sql_param`](DataSets/ds_azure_sql_param.json), [`ds_onprem_sqlserver_param`](DataSets/ds_onprem_sqlserver_param.json) |
+| `Integration_Runtimes` | [`SHIR-01.json`](Integration_Runtimes/SHIR-01.json) |
+| `sql` | [`src_control_table.sql`](sql/src_control_table.sql), [`sp_Audit_Table.sql`](sql/sp_Audit_Table.sql), [`sp_Azure_Audit_Table.sql`](sql/sp_Azure_Audit_Table.sql), [`Audit_Table.sql`](sql/Audit_Table.sql), [`Azure_Audit_Table.sql`](sql/Azure_Audit_Table.sql)  |
+| `Control_Tables` | [`Source_Control_Table.csv`](Control_Tables/Source_Control_Table.csv) |
+| `Audit_Tables` | [`Blob_Audit_Table.csv`](Audit_Tables/Blob_Audit_Table.csv), [`Database_Audit_Table.csv`](Audit_Tables/Database_Audit_Table.csv) |
+| `Images` | [`Framework_Architecture_Diagram.png`](Images/Framework_Architecture_Diagram.png), [`Pipeline_Flow_Diagram.png`](Images/Pipeline_Flow_Diagram.png) |
+| `docs` | [`README.md`](docs/README.md) |
 
-/sql
-  └── src_control_table.sql
-  └── audit_table.sql
-  └── azure_audit_table.sql
-  └── sp_insert_audit_log.sql
-
-/assets
-  └── data_flow_diagram.png
-  └── pipeline_architecture.png
-
-/docs
-  └── README.md
-```
-
-
-
----
 
 ## 🔍 What Makes This Project Valuable
 
@@ -119,26 +106,6 @@ Stores logs of execution, including:
 ✅ **Scalable**: Easy to extend with new source types or transformations.  
 ✅ **Enterprise-Ready**: Built-in archival, monitoring, and logging mechanisms.
 
----
-
-## 📌 Future Improvements
-
-- Integrate with Azure Data Catalog or Purview for data governance
-- Implement email/Teams alerting for pipeline failures
-- Add support for semi-structured sources (JSON, XML)
-- Visualize audit logs using Power BI or Azure Monitor
-
----
-
 ## 📣 Contact
 
 Feel free to connect with me on [`LinkedIn`](https://www.linkedin.com/in/madalanaveen) or send me an [`Email`](mailto:madalanaveen9@gmail.com) if you’d like to know more or discuss how I built this project.
-
----
-
-## 📷 Project Visuals
-
-👉 [Insert pipeline architecture diagram here]  
-👉 [Insert data flow diagram here]
-
----
