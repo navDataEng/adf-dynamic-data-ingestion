@@ -101,7 +101,7 @@ Stores logs of execution, including:
 ## 🔍 What Makes This Project Valuable
 
 ✅ **Dynamic**: Ingestion logic is metadata-driven, making it easy to onboard new sources.  
-✅ **Maintainable**: No duplication of pipelines for each source.  
+✅ **Maintainable**: No duplication of pipelines for each schema in a database.  
 ✅ **Auditable**: Track pipeline runs, record counts, errors.  
 ✅ **Scalable**: Easy to extend with new source types or transformations.  
 ✅ **Enterprise-Ready**: Built-in archival, monitoring, and logging mechanisms.
